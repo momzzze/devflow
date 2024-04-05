@@ -34,7 +34,6 @@ const LocalSearchBar = ({
       <Input
         type="text"
         placeholder={placeholder}
-        value=""
         onChange={() => {
           console.log("TODO Search");
         }}

@@ -7,66 +7,10 @@ import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/coonstants/filters";
 import Link from "next/link";
 import React from "react";
+import { getQuestions } from "@/lib/actions/question.action";
 
-const questionMock = [
-  {
-    _id: "1",
-    title:
-      "The Lightning Component c:LWC_PizzaTracker generated invalid output for field status. Error How to solve this",
-    tags: [
-      { _id: "1", name: "LWC" },
-      { _id: "2", name: "Salesforce" },
-      { _id: "3", name: "Lightning" },
-    ],
-    author: {
-      _id: "author1",
-      name: "John Doe",
-      picture: "path/to/john_doe_picture.png",
-    },
-    upvotes: 10,
-    answers: [],
-    views: 100,
-    createdAt: new Date("2023-09-01T00:00:00.000Z"),
-  },
-  {
-    _id: "2",
-    title: "How to use Redux with React Hooks?",
-    tags: [
-      { _id: "1", name: "React" },
-      { _id: "2", name: "Redux" },
-      { _id: "3", name: "React Hooks" },
-    ],
-    author: {
-      _id: "author2",
-      name: "Sara Smith",
-      picture: "path/to/sara_smith_picture.png",
-    },
-    upvotes: 20,
-    answers: [],
-    views: 200,
-    createdAt: new Date("2023-09-01T00:00:00.000Z"),
-  },
-  {
-    _id: "3",
-    title: "How to use React Router with TypeScript?",
-    tags: [
-      { _id: "1", name: "React" },
-      { _id: "2", name: "React Router" },
-      { _id: "3", name: "TypeScript" },
-    ],
-    author: {
-      _id: "author3",
-      name: "Tom Brown",
-      picture: "path/to/tom_brown_picture.png",
-    },
-    upvotes: 30,
-    answers: [],
-    views: 300,
-    createdAt: new Date("2023-09-01T00:00:00.000Z"),
-  },
-];
-
-const Home = () => {
+export default async function Home() {
+  const result = await getQuestions({});
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
@@ -93,8 +37,8 @@ const Home = () => {
       </div>
       <HomeFilters filters={HomePageFilters} />
       <div className="mt-10 flex w-full flex-col space-x-1 shadow-none">
-        {questionMock.length > 0 ? (
-          questionMock.map((q) => (
+        {result.questions.length > 0 ? (
+          result.questions.map((q) => (
             <QuestionCard
               key={q._id}
               _id={q._id}
@@ -120,6 +64,4 @@ const Home = () => {
       </div>
     </>
   );
-};
-
-export default Home;
+}
