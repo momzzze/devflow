@@ -34,7 +34,7 @@ const Filters = ({ filters, otherClasses, containerClasses }: Props) => {
               <SelectItem
                 key={item.value}
                 value={item.value}
-                className="z-30 text-white"
+                className="text-dark500_light700 z-30"
               >
                 {item.name}
               </SelectItem>
