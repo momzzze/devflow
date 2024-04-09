@@ -8,7 +8,6 @@ import React from "react";
 
 const TagPage = async () => {
   const result = await getAllTags({});
-  console.log(result.tags);
 
   return (
     <>
