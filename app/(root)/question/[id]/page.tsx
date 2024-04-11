@@ -22,6 +22,7 @@ async function page({ params, searchParams }: URLProps) {
   }
 
   const result = await getQuestionById({ questionId: params.id });
+
   return (
     <>
       <div className="flex-start w-full flex-col">
@@ -82,7 +83,9 @@ async function page({ params, searchParams }: URLProps) {
           textStyles="small-medium text-dark400_light800"
         />
       </div>
-      <ParseHTML data={result.content} />
+      <div className="text-dark300_light700">
+        <ParseHTML data={result.content} />
+      </div>
       <div className="mt-8 flex flex-wrap gap-2">
         {result.tags.map((tag: any) => (
           <RenderTag

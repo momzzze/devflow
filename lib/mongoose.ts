@@ -18,7 +18,6 @@ export const connectToDatabase = async () => {
             dbName: 'devflow'
         })
         isConnected = true;
-        console.log('=> mongodb database is connected');
     } catch (error) {
         console.log('=> mongodb database connection failed', error);
     }
