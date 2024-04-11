@@ -4,9 +4,11 @@
 import Question from "@/database/models/Question";
 import { connectToDatabase } from "../mongoose"
 import Tag from "@/database/models/Tag";
-import { CreateQuestionParams, GetQuestionByIdParams, GetQuestionsParams, QuestionVoteParams } from "./shared.types";
+import { CreateQuestionParams, DeleteQuestionParams, EditQuestionParams, GetQuestionByIdParams, GetQuestionsParams, QuestionVoteParams } from "./shared.types";
 import User from "@/database/models/User";
 import { revalidatePath } from "next/cache";
+import Answer from "@/database/models/Answer";
+import Interaction from "@/database/models/Interaction";
 
 
 
@@ -125,3 +127,39 @@ export async function downvoteQuestion(params: QuestionVoteParams) {
     }
 }
 
+export async function deleteQuestion(params: DeleteQuestionParams) {
+    try {
+        connectToDatabase();
+        const { questionId, path } = params;
+
+        await Question.deleteOne({ _id: questionId });
+        await Answer.deleteMany({ question: questionId });
+        await Interaction.deleteMany({ question: questionId });
+        await Tag.updateMany({ questions: questionId }, { $pull: { questions: questionId } });
+
+        revalidatePath(path);
+    } catch (error) {
+        console.log(error);
+
+    }
+}
+
+export async function editQuestion(params: EditQuestionParams) {
+    try {
+        connectToDatabase();
+        const { questionId, title, content, path } = params;
+
+        const question = await Question.findById(questionId).populate("tags");
+        if (!question) throw new Error('Question not found');
+
+        question.title = title;
+        question.content = content;
+
+        await question.save();
+
+        revalidatePath(path);
+    } catch (error) {
+        console.log(error);
+
+    }
+}
