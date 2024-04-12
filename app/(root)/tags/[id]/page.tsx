@@ -6,7 +6,6 @@ import { QuestionFilters } from "@/coonstants/filters";
 import { IQuestion } from "@/database/models/Question";
 import { getQuestionsByTagId } from "@/lib/actions/tag.action";
 import { URLProps } from "@/types";
-import console from "console";
 import React from "react";
 
 const Page = async ({ params, searchParams }: URLProps) => {
@@ -21,7 +20,7 @@ const Page = async ({ params, searchParams }: URLProps) => {
       <h1 className="h1-bold text-dark100_light900">{result.tagTitle}</h1>
       <div className="mt-11 w-full">
         <LocalSearchBar
-          route="/"
+          route={`/tags/${params.id}`}
           iconPosition="left"
           imgSrc="/assets/icons/search.svg"
           placeholder="Search tag questions"

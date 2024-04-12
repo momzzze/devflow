@@ -35,8 +35,14 @@ export async function getTopInteractedTags(params:GetTopInteractedTagsParams) {
 export async function getAllTags(params:GetAllTagsParams) {
     try {
         connectToDatabase();
-        // const {page=1,pageSize,filter,searchQuery}=params;
-        const tags=await Tag.find({});
+        const {searchQuery}=params;
+        const query:FilterQuery<typeof Tag>={};
+        if(searchQuery){
+            query.$or=[
+                {name:{$regex:searchQuery,$options:'i'}}
+            ]
+        }
+        const tags=await Tag.find(query);
         return {tags};
     } catch (error) {
         console.log(error);
@@ -47,7 +53,7 @@ export async function getQuestionsByTagId(params:GetQuestionsByTagIdParams) {
     try {
         connectToDatabase();
 
-        const {tagId, page=1, pageSize=10,searchQuery}=params;
+        const {tagId,searchQuery}=params;
         
         const tagFilter:FilterQuery<ITag>={_id:tagId};
 
@@ -66,7 +72,6 @@ export async function getQuestionsByTagId(params:GetQuestionsByTagIdParams) {
             ]
         })
         if(!tag) throw new Error('Tag not found');
-        console.log(tag);
         
         const questions= tag.questions
 
