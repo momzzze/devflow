@@ -36,7 +36,9 @@ export async function updateUser(params: UpdateUserParams) {
         connectToDatabase();
         const { clerkId, updateData, path } = params
 
-        await User.findOneAndUpdate({ clerkId }, updateData)
+        await User.findOneAndUpdate({ clerkId }, updateData,{
+            new:true,        
+        })
         revalidatePath(path);
     } catch (error) {
         console.log(error);
@@ -138,7 +140,6 @@ export async function getUserInfo(params: GetUserByIdParams) {
     try {
         connectToDatabase();
         const { userId } = params;
-        console.log("User id: ",userId);
         
         const user = await User.findOne({ clerkId: userId });
         if(!user){
@@ -189,6 +190,9 @@ export async function getUsersAnswers(params:GetUserStatsParams) {
         throw error;
     }
 }
+
+
+
 // export async function getAllUsers(params:GetAllUsersParams) {
 //     try {
 //         connectToDatabase();

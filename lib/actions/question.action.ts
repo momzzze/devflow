@@ -163,3 +163,14 @@ export async function editQuestion(params: EditQuestionParams) {
 
     }
 }
+
+export async function getHotQuestions(params: GetQuestionsParams) {
+    try {
+        connectToDatabase();
+        const questions = await Question.find({}).sort({ views: -1 }).limit(5);
+        return { questions };
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
