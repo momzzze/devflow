@@ -72,7 +72,7 @@ export async function deleteUser(params: DeleteUserParams) {
 export async function getAllUsers(params: GetAllUsersParams) {
     try {
         connectToDatabase();
-        const {searchQuery}=params;
+        const {searchQuery,filter}=params;
         
         const query:FilterQuery<typeof User>={};
         if(searchQuery){
@@ -83,8 +83,21 @@ export async function getAllUsers(params: GetAllUsersParams) {
             ]
         }
 
+        let sortOptions={};
+        switch(filter){
+            case 'new_users':
+                sortOptions={joinedAt:-1};
+                break;
+            case 'old_users':
+                sortOptions={joinedAt:1};
+                break;
+            case 'top_contributors':
+                sortOptions={totalQuestions:-1};
+                break;
+        }
+
         const users=await User.find(query)
-        .sort({createdAt:-1});
+        .sort(sortOptions);
 
         return {users};
     } catch (error) {
@@ -119,17 +132,36 @@ export async function toggleSaveQuestion(params:ToggleSaveQuestionParams) {
 export async function getSavedQuestions(params:GetSavedQuestionsParams) {
     try {
         connectToDatabase();
-        const {clerkId,searchQuery}=params;
+        const {clerkId,searchQuery,filter}=params;
         
         const query:FilterQuery<typeof Question>=searchQuery
         ? {title: {$regex: new RegExp(searchQuery, 'i')}}
         : {}
+        let filterOptions={};
+
+        switch(filter){
+            case 'most_recent':
+                filterOptions={createdAt:-1};
+                break;
+                case 'oldest':
+                    filterOptions={createdAt:1};
+                    break;
+            case 'most_viewed':
+                filterOptions={views:-1};
+                break;
+                case 'most_voted':
+                    filterOptions={upvotes:-1};
+                    break;
+                case 'most_answered':
+                    filterOptions={answers:-1};
+                    break;
+        }
 
         const user= await User.findOne({clerkId}).populate({
             path:'saved',
             match: query,
             options: {
-                sort: {createdAt:-1},
+                sort: filterOptions,
             },
             populate:[
                 {path:'tags',model:Tag,select:'_id name'},
@@ -168,7 +200,7 @@ export async function getUserInfo(params: GetUserByIdParams) {
 export async function getUsersQuestions(params:GetUserStatsParams) {
     try {
         connectToDatabase();
-        const {userId, page=1,pageSize=10}=params;
+        const {userId}=params;
 
         const totalQuestions=await Question.countDocuments({author:userId})
         const userQuestions=await Question.find({author:userId})
@@ -185,7 +217,7 @@ export async function getUsersQuestions(params:GetUserStatsParams) {
 export async function getUsersAnswers(params:GetUserStatsParams) {
     try {
         connectToDatabase();
-        const {userId, page=1,pageSize=10}=params;
+        const {userId}=params;
 
         const totalAnswers=await Answer.countDocuments({author:userId})
         
