@@ -3,13 +3,17 @@ import React from "react";
 import QuestionCard from "../cards/QuestionCard";
 import NoResult from "./NoResult";
 import { SearchParamsProps } from "@/types";
+import Pagination from "./Pagination";
 
 interface Props extends SearchParamsProps {
   userId: string;
   clerkId?: string | null;
 }
-const QuestionsTab = async ({ searchProps, userId, clerkId }: Props) => {
-  const result = await getUsersQuestions({ userId });
+const QuestionsTab = async ({ searchParams, userId, clerkId }: Props) => {
+  const result = await getUsersQuestions({
+    userId,
+    page: searchParams?.page ? +searchParams.page : 1,
+  });
 
   return (
     <div className="mt-10 flex w-full flex-col space-x-1 shadow-none">
@@ -38,6 +42,12 @@ const QuestionsTab = async ({ searchProps, userId, clerkId }: Props) => {
           linkTitle="Ask a Question"
         />
       )}
+      <div className="mt-10">
+        <Pagination
+          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          isNext={result!.isNext}
+        />
+      </div>
     </div>
   );
 };

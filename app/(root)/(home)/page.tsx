@@ -9,11 +9,13 @@ import Link from "next/link";
 import React from "react";
 import { getQuestions } from "@/lib/actions/question.action";
 import { SearchParamsProps } from "@/types";
+import Pagination from "@/components/shared/Pagination";
 
 export default async function Home({ searchParams }: SearchParamsProps) {
   const result = await getQuestions({
     searchQuery: searchParams?.q,
     filter: searchParams?.filter,
+    page: searchParams?.page ? +searchParams.page : 1,
   });
 
   return (
@@ -41,7 +43,7 @@ export default async function Home({ searchParams }: SearchParamsProps) {
         />
       </div>
       <HomeFilters filters={HomePageFilters} />
-      <div className="mt-10 flex w-full flex-col space-x-1 shadow-none">
+      <div className="mt-10 flex w-full flex-col gap-2 space-x-1 shadow-none">
         {result!.questions.length > 0 ? (
           result!.questions.map((q) => (
             <QuestionCard
@@ -66,6 +68,12 @@ export default async function Home({ searchParams }: SearchParamsProps) {
             linkTitle="Ask a Question"
           />
         )}
+      </div>
+      <div className="mt-10">
+        <Pagination
+          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          isNext={result!.isNext}
+        />
       </div>
     </>
   );
