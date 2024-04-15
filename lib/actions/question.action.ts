@@ -35,6 +35,18 @@ export async function createQuestion(params: CreateQuestionParams) {
         await Question.findByIdAndUpdate(question._id, {
             $push: { tags: { $each: tagDocuments } }
         })
+
+        await Interaction.create({
+            user: author,
+            action: "ask_question",
+            question: question._id,
+            tags: tagDocuments
+        })
+
+        // +5 points for asking a question
+        await User.findByIdAndUpdate(author, { $inc: { reputation: 5 } });
+
+
         revalidatePath(path);
     } catch (error) {
         console.log(error);
@@ -90,7 +102,6 @@ export async function getQuestions(params: GetQuestionsParams) {
     }
 }
 
-
 export async function getQuestionById(params: GetQuestionByIdParams) {
     try {
         connectToDatabase();
@@ -124,7 +135,8 @@ export async function upvoteQuestion(params: QuestionVoteParams) {
         const question = await Question.findByIdAndUpdate(questionId, updateQuery, { new: true });
         if (!question) throw new Error('Question not found');
 
-        // Increment author's reputation
+        await User.findByIdAndUpdate(userId, { $inc: { reputation: hasupVoted ? -1 : 1 } });
+        await User.findByIdAndUpdate(question.author, { $inc: { reputation: hasupVoted ? -10 : 10 } });
 
         revalidatePath(path);
 
@@ -154,6 +166,8 @@ export async function downvoteQuestion(params: QuestionVoteParams) {
         if (!question) throw new Error('Question not found');
 
         // Increment author's reputation
+        await User.findByIdAndUpdate(userId, { $inc: { reputation: hasdownVoted ? -2 : 2 } });
+        await User.findByIdAndUpdate(question.author, { $inc: { reputation: hasdownVoted ? -10 : 10 } });
 
         revalidatePath(path);
 
