@@ -15,9 +15,9 @@ import {
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
-import { IUser } from "@/database/models/User";
 import { updateUser } from "@/lib/actions/user.action";
 import { usePathname, useRouter } from "next/navigation";
+import { toast } from "../ui/use-toast";
 
 interface Props {
   clerkId: string;
@@ -48,9 +48,15 @@ const EditProfile = ({ clerkId, user }: Props) => {
         updateData: values,
         path: pathname,
       });
+      toast({ title: "success", description: "Profile updated successfully" });
       router.push(`/profile/${clerkId}`);
     } catch (error) {
       console.log(error);
+      return toast({
+        title: "error",
+        description: "An error occurred",
+        variant: "destructive",
+      });
     } finally {
       setIsSubmitting(false);
     }
