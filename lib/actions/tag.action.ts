@@ -6,27 +6,34 @@ import { GetAllTagsParams, GetQuestionsByTagIdParams, GetTopInteractedTagsParams
 import Tag, { ITag } from "@/database/models/Tag";
 import { FilterQuery } from "mongoose";
 import Question from "@/database/models/Question";
+import Interaction from "@/database/models/Interaction";
 
 
 
 export async function getTopInteractedTags(params:GetTopInteractedTagsParams) {
     try {
         connectToDatabase();
-        const {userId}=params;
-        
-        const user=await User.findById(userId);
-        if(!user) throw new Error('User not found');
-        
-        return [{
-            _id:'1',
-            name:'tag1'
-        },{
-            _id:'2',
-            name:'tag2'
-        },{
-            _id:'3',
-            name:'tag3'
-        }]
+
+    const { userId, limit = 2 } = params;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      throw new Error('❌🔍 User not found 🔍❌');
+    }
+    
+    const tagMap = await Interaction.aggregate([
+      { $match: { user: user._id, tags: { $exists: true, $ne: [] } } },
+      { $unwind: '$tags' },
+      { $group: { _id: '$tags', count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: limit }
+    ]);
+
+    const topTags = tagMap.map((tag) => tag._id);
+    const topTagDocuments = await Tag.find({ _id: { $in: topTags } });
+
+    return topTagDocuments;
     } catch (error) {
         console.log(error);
     }
