@@ -8,9 +8,16 @@ import { getUserInfo } from "@/lib/actions/user.action";
 import { getMonthYear } from "@/lib/utils";
 import { URLProps } from "@/types";
 import { SignedIn, auth } from "@clerk/nextjs";
+import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+
+export const metadata: Metadata = {
+  title: "Profile | DevFlow",
+  description:
+    "DevFlow profile page is a place where you can describe your self or to see others developers profiles to see their achievements and questions or answers, designers, and tech enthusiasts. Explore user profiles.",
+};
 
 const Page = async ({ params, searchParams }: URLProps) => {
   const { userId: clerkId } = auth();
@@ -88,7 +95,10 @@ const Page = async ({ params, searchParams }: URLProps) => {
               Answers
             </TabsTrigger>
           </TabsList>
-          <TabsContent value="top-posts">
+          <TabsContent
+            value="top-posts"
+            className="mt-5 flex w-full flex-col gap-6"
+          >
             <QuestionsTab
               searchParams={searchParams}
               userId={userInfo?.user._id}

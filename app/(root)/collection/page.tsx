@@ -7,7 +7,14 @@ import { QuestionFilters } from "@/coonstants/filters";
 import { getSavedQuestions } from "@/lib/actions/user.action";
 import { SearchParamsProps } from "@/types";
 import { auth } from "@clerk/nextjs";
+import { Metadata } from "next";
 import React from "react";
+
+export const metadata: Metadata = {
+  title: "Collection | DevFlow",
+  description:
+    "DevFlow collection is place where you can find all your saved questions. Save questions to read later, or to refer back to them when you need help. Explore your saved questions.",
+};
 
 const page = async ({ searchParams }: SearchParamsProps) => {
   const { userId } = auth();

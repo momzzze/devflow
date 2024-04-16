@@ -9,9 +9,16 @@ import { getUserById } from "@/lib/actions/user.action";
 import { formatNumber, getTimestamp } from "@/lib/utils";
 import { URLProps } from "@/types";
 import { auth } from "@clerk/nextjs";
+import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+
+export const metadata: Metadata = {
+  title: "Question | DevFlow",
+  description:
+    "DevFlow question page is a place where you can ask programming questions about software development. Get help with your code, share your knowledge with others, and level up your programming skills. Explore topics in web development, mobile development, game development, and more.",
+};
 
 async function page({ params, searchParams }: URLProps) {
   const { userId: clerkId } = auth();

@@ -7,16 +7,45 @@ import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/coonstants/filters";
 import Link from "next/link";
 import React from "react";
-import { getQuestions } from "@/lib/actions/question.action";
+import {
+  getQuestions,
+  getRecommendedQuestions,
+} from "@/lib/actions/question.action";
 import { SearchParamsProps } from "@/types";
 import Pagination from "@/components/shared/Pagination";
 
+import type { Metadata } from "next";
+import { auth } from "@clerk/nextjs";
+
+export const metadata: Metadata = {
+  title: "Home | DevFlow",
+  description:
+    "DevFlow is a community-driven platform for asking and answering programming questions about software development. Get help with your code, share your knowledge with others, and level up your programming skills. Explore topics in web development, mobile development, game development, and more.",
+};
+
 export default async function Home({ searchParams }: SearchParamsProps) {
-  const result = await getQuestions({
-    searchQuery: searchParams?.q,
-    filter: searchParams?.filter,
-    page: searchParams?.page ? +searchParams.page : 1,
-  });
+  const { userId } = auth();
+  let result;
+  if (searchParams?.filter === "recommended") {
+    if (userId) {
+      result = await getRecommendedQuestions({
+        userId,
+        searchQuery: searchParams?.q,
+        page: searchParams?.page ? +searchParams.page : 1,
+      });
+    } else {
+      result = {
+        questions: [],
+        isNext: false,
+      };
+    }
+  } else {
+    result = await getQuestions({
+      searchQuery: searchParams?.q,
+      filter: searchParams?.filter,
+      page: searchParams?.page ? +searchParams.page : 1,
+    });
+  }
 
   return (
     <>
