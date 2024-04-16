@@ -38,7 +38,7 @@ const Votes = ({
 
   const handleVote = async (action: string) => {
     if (!userId) {
-      return toast({ title: "error", description: "Please login to vote" });
+      return toast({ title: "Error", description: "Please login to vote" });
     }
     if (action === "upvote") {
       if (type === "Question") {

@@ -17,6 +17,7 @@ import { Button } from "../ui/button";
 import Image from "next/image";
 import { createAnswer } from "@/lib/actions/answer.action";
 import { usePathname } from "next/navigation";
+import { toast } from "../ui/use-toast";
 
 interface Props {
   questionId: string;
@@ -50,8 +51,10 @@ const Answer = ({ question, questionId, authorId }: Props) => {
         const editor = editorRef.current as any;
         editor.setContent("");
       }
+      toast({ title: "Success", description: "Answer submitted" });
     } catch (error) {
       console.log(error);
+      toast({ title: "Error", description: "Failed to submit answer" });
     } finally {
       setIsSubmitting(false);
     }
@@ -83,8 +86,10 @@ const Answer = ({ question, questionId, authorId }: Props) => {
         const editor = editorRef.current as any;
         editor.setContent(formatAnswer);
       }
+      toast({ title: "Success", description: "AI answer generated" });
     } catch (error) {
       console.log(error);
+      toast({ title: "Error", description: "Failed to generate AI answer" });
     } finally {
       setIsSubmittingAI(false);
     }
