@@ -39,3 +39,4 @@ export const GlobalSearchFilters = [
     { name: "User", value: "user" },
     { name: "Tag", value: "tag" },
 ];
+
