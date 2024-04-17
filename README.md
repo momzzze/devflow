@@ -1,6 +1,6 @@
 # Dev Overflow
 
-![demo]('/public/tumbnail.png')
+![demo]('./public/tumbnail.png')
 
 ## 🌐 Live Demo
 
